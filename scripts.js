@@ -9,21 +9,44 @@ $(document).ready(function(){
 		// getJSON, param1 = where to go. param2 = what to do
 		$.getJSON(url, function(dataJSGotIfAny){
 			var stockInfo = dataJSGotIfAny.query.results.quote;
-			// This If statement adds class color based on finding a plus sign in the quote.change section
-			if(stockInfo.Change.indexOf('+') > -1){
-				var classChange = "success";
+			// create variable that uses count
+			var moreThanOne = dataJSGotIfAny.query.count;
+			console.log(moreThanOne);
+			var newHTML = '';
+			if(moreThanOne > 1){
+				for(let i = 0; i < stockInfo.length; i++){
+					if(stockInfo[i].Change.indexOf('+') > -1){
+					var classChange = "success";
+					}
+					else{
+						var classChange = "danger";
+					}
+					newHTML += '<tr>';
+						newHTML += '<td>'+stockInfo[i].Symbol+'</td>';
+						newHTML += '<td>'+stockInfo[i].Name+'</td>';
+						newHTML += '<td>'+stockInfo[i].Ask+'</td>';
+						newHTML += '<td>'+stockInfo[i].Bid+'</td>';
+						newHTML += '<td class="'+classChange+'">'+stockInfo[i].Change+'</td>';
+					newHTML += '</tr>';
+				}
 			}
 			else{
-				var classChange = "danger";
+				// This If statement adds class color based on finding a plus sign in the quote.change section
+				if(stockInfo.Change.indexOf('+') > -1){
+					var classChange = "success";
+				}
+				else{
+					var classChange = "danger";
+				}
+				
+				newHTML += '<tr>';
+					newHTML += '<td>'+stockInfo.Symbol+'</td>';
+					newHTML += '<td>'+stockInfo.Name+'</td>';
+					newHTML += '<td>'+stockInfo.Ask+'</td>';
+					newHTML += '<td>'+stockInfo.Bid+'</td>';
+					newHTML += '<td class="'+classChange+'">'+stockInfo.Change+'</td>';
+				newHTML += '</tr>';
 			}
-			var newHTML = '';
-			newHTML += '<tr>';
-				newHTML += '<td>'+stockInfo.Symbol+'</td>';
-				newHTML += '<td>'+stockInfo.Name+'</td>';
-				newHTML += '<td>'+stockInfo.Ask+'</td>';
-				newHTML += '<td>'+stockInfo.Bid+'</td>';
-				newHTML += '<td class="'+classChange+'">'+stockInfo.Change+'</td>';
-			newHTML += '</tr>';
 			$('#stock-body').html(newHTML);
 		});
 
