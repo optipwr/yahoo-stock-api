@@ -1,54 +1,89 @@
 $(document).ready(function(){
-	$('.yahoo-form').submit(function(){
-		// Stop the form from submitting (default action)
-		event.preventDefault();
-		var symbol = $('#symbol').val();
 
-		// Dynamically build the URL to use the symbol(s) the user requested
-		var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("'+symbol+'")%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json';
-		// getJSON, param1 = where to go. param2 = what to do
-		$.getJSON(url, function(dataJSGotIfAny){
-			var stockInfo = dataJSGotIfAny.query.results.quote;
-			// create variable that uses count
-			var moreThanOne = dataJSGotIfAny.query.count;
-			console.log(moreThanOne);
-			var newHTML = '';
-			if(moreThanOne > 1){
-				for(let i = 0; i < stockInfo.length; i++){
-					if(stockInfo[i].Change.indexOf('+') > -1){
-					var classChange = "success";
-					}
-					else{
-						var classChange = "danger";
-					}
-					newHTML += '<tr>';
-						newHTML += '<td>'+stockInfo[i].Symbol+'</td>';
-						newHTML += '<td>'+stockInfo[i].Name+'</td>';
-						newHTML += '<td>'+stockInfo[i].Ask+'</td>';
-						newHTML += '<td>'+stockInfo[i].Bid+'</td>';
-						newHTML += '<td class="'+classChange+'">'+stockInfo[i].Change+'</td>';
-					newHTML += '</tr>';
-				}
-			}
-			else{
-				// This If statement adds class color based on finding a plus sign in the quote.change section
-				if(stockInfo.Change.indexOf('+') > -1){
-					var classChange = "success";
-				}
-				else{
-					var classChange = "danger";
-				}
-				
-				newHTML += '<tr>';
-					newHTML += '<td>'+stockInfo.Symbol+'</td>';
-					newHTML += '<td>'+stockInfo.Name+'</td>';
-					newHTML += '<td>'+stockInfo.Ask+'</td>';
-					newHTML += '<td>'+stockInfo.Bid+'</td>';
-					newHTML += '<td class="'+classChange+'">'+stockInfo.Change+'</td>';
-				newHTML += '</tr>';
-			}
-			$('#stock-body').html(newHTML);
-		});
-
+	$('#arrow1').click(function(){
+		$('#page1,#page2').animate({
+			'right':'100vw'
+		},100);
 	});
+
+	$('#arrow2').click(function(){
+		$('#page1,#page2').animate({
+			'right':'0vw'
+		},100);
+	});
+
+	$('.yahoo-form').submit(function(){
+		event.preventDefault();
+		symbol = $('#symbol').val();
+		// Dynamically build the URL to use the symbol(s) the user requested
+		runJSON(symbol);
+	});
+
+	$('.save').click(function(){
+		localStorage.setItem("userStocks", $('#symbol').val());
+	})
+
+	$('.retrieve').click(function(){
+		runJSON(userStocksSaved);
+		userStocksSaved = localStorage.getItem("userStocks");
+	})
+
+	$('.clear').click(function(){
+		$('#stock-body').html("");
+		localStorage.setItem("userStocks", "");
+
+	})
 });
+
+var userStocksSaved;
+var symbol;
+var rowCounter = 0;
+
+function buildStockRow(stock){
+	if(stock.Change.indexOf('+') > -1) {
+		var classChange = "success";
+	}
+	else{
+		var classChange = "danger";
+	}
+	var newHTML = '';
+	newHTML += '<tr>';
+		newHTML += '<td>'+stock.Symbol+'</td>';
+		newHTML += '<td>'+stock.Name+'</td>';
+		newHTML += '<td>'+stock.Ask+'</td>';
+		newHTML += '<td>'+stock.Bid+'</td>';
+		newHTML += '<td class="'+classChange+'">'+stock.Change+'</td>';
+	newHTML += '</tr>';
+	return newHTML;
+}
+
+function runJSON(userStocksSavedOrSymbol){
+	var url = `http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("${userStocksSavedOrSymbol}")%0A%09%09&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json`;
+	$.getJSON(url, function(dataJSGotIfAny){
+		var stockInfo = dataJSGotIfAny.query.results.quote;
+		if(dataJSGotIfAny.query.count == 1){
+			// we know this is a single object becaues theres only 1
+			var htmlToPlot = buildStockRow(stockInfo);
+			$('#stock-body').append(htmlToPlot);				
+		}else{
+			// we know this is an array, because the count isnt 1
+			for(let i = 0; i < stockInfo.length; i++){
+				var htmlToPlot = buildStockRow(stockInfo[i]);
+				$('#stock-body').append(htmlToPlot);
+			}
+		}
+	});	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
