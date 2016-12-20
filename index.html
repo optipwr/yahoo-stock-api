@@ -1,3 +1,12 @@
+<!-- 1. Make getJson into a function so you can call it whenver oyu need to.
+2. Instead of auto saving their symbols, you give them a save button
+3. Retreive button?
+4. Put bookmarks on the side of teh page2
+5. Automatically refresh all stocks every X seconds
+6. Keep the watchlist stocks in a separate table from searched stocks
+7. Keep a "Recent" localStorage var, and a "saved" localStorage var
+8. Pair up with BlackJack -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +35,7 @@
 						</div>
 						<button type="submit" class="btn btn-primary">Get my stock quotes!</button>
 						<button class="btn btn-success save">Save All</button>
-						<button class="btn btn-success retrieve">Retrieve All</button>
+						<!-- <button class="btn btn-success retrieve">Retrieve All</button> -->
 						<button class="btn btn-danger clear">Clear All</button>
 					</form>
 					<table class="table table-striped table-bordered">
@@ -41,6 +50,30 @@
 						</thead>
 
 						<tbody id="stock-body">
+<!-- 							<tr>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr> -->
+						</tbody>
+					</table>
+
+					<h1>Watchlist</h1>
+					<button class="btn btn-success retrieve">Retrieve All</button>
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>Stock Symbol</th>
+								<th>Company Name</th>
+								<th>Ask Price</th>
+								<th>Bid Price</th>
+								<th>Daily Change</th>
+							</tr>
+						</thead>
+
+						<tbody id="stock-body-two">
 <!-- 							<tr>
 								<td>-</td>
 								<td>-</td>

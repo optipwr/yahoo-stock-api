@@ -16,7 +16,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		symbol = $('#symbol').val();
 		// Dynamically build the URL to use the symbol(s) the user requested
-		setInterval(runJSONx, 1000);
+		setInterval(runJSONx, 3000);
 	});
 
 	$('.save').click(function(){
@@ -83,12 +83,12 @@ function runJSON(userStocksSavedOrSymbol){
 		if(dataJSGotIfAny.query.count == 1){
 			// we know this is a single object becaues theres only 1
 			var htmlToPlot = buildStockRow(stockInfo);
-			$('#stock-body').append(htmlToPlot);				
+			$('#stock-body-two').append(htmlToPlot);				
 		}else{
 			// we know this is an array, because the count isnt 1
 			for(let i = 0; i < stockInfo.length; i++){
 				var htmlToPlot = buildStockRow(stockInfo[i]);
-				$('#stock-body').append(htmlToPlot);
+				$('#stock-body-two').append(htmlToPlot);
 			}
 		}
 	});	
